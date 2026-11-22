@@ -4,71 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Convoy Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--text:#1a1d21;--mut:#6b7280;--line:#e2e5ea;--acc:#2563eb;--grid:#dde1e7;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1216;--card:#1a1e24;--text:#eef0f3;--mut:#9aa3af;--line:#2a3039;--acc:#60a5fa;--grid:#2a3039;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f1216;--card:#1a1e24;--text:#eef0f3;--mut:#9aa3af;--line:#2a3039;--acc:#60a5fa;--grid:#2a3039;color-scheme:dark}
+:root{--bg:#f5f6f8;--card:#fff;--text:#1a1d21;--mut:#6b7280;--line:#e2e5ea;--acc:#2563eb}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--card:#1a1e24;--text:#eef0f3;--mut:#9aa3af;--line:#2a3039;--acc:#60a5fa;color-scheme:dark}}
 *{box-sizing:border-box}
-[hidden]{display:none!important}
-.perm{border-color:var(--acc)}
-.perm p{margin:0 0 10px;font-size:15px}
-.perm ol{margin:0 0 10px;padding-left:20px;font-size:14px;color:var(--mut)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0 auto;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px;max-width:560px}
-h1{font-size:22px;margin:4px 0 12px}
-h2{font-size:14px;margin:0 0 8px;color:var(--mut);font-weight:600}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{display:flex;flex-direction:column;height:100dvh}
+#map{flex:1 1 auto;min-height:0}
+#setup{flex:1;overflow-y:auto;padding:16px 14px 8px}
+#gobar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--bg)}
+#gobar button{font-size:18px;padding:16px}
+#live{flex:1;display:flex;flex-direction:column;min-height:0}
+body.live #setup,body.live #gobar{display:none}
+body:not(.live) #live{display:none}
+.bar button{flex:1}
+#panel{flex:0 0 auto;max-height:46%;overflow-y:auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}.bar b{flex:1;font-size:18px}
 button{font:inherit;border:0;border-radius:12px;padding:12px 16px;background:var(--acc);color:#fff;width:100%;font-weight:600}
+button.sm{width:auto;padding:7px 12px;font-size:14px;background:var(--card);color:var(--text);border:1px solid var(--line)}
 button.sec{background:transparent;color:var(--mut);border:1px solid var(--line)}
-input[type=text]{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);margin-bottom:10px}
-.opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.opt{width:auto;padding:8px 12px;background:var(--bg);color:var(--text);border:2px solid var(--line);font-weight:500}
+input[type=text]{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);margin-bottom:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.opt{width:auto;padding:6px 10px;background:var(--card);color:var(--text);border:2px solid var(--line);font-weight:500;font-size:15px}
 .opt.on{border-color:var(--acc)}
-.sw{width:34px;height:34px;border-radius:50%;padding:0;border:3px solid transparent}
-.sw.on{border-color:var(--text)}
+.opt svg{width:36px;height:20px;vertical-align:middle;margin-right:6px}
+.sw{width:32px;height:32px;border-radius:50%;padding:0;border:3px solid transparent}.sw.on{border-color:var(--text)}
+.cc{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:14px;margin-bottom:8px}
+input[type=color]{width:44px;height:32px;border:0;padding:0;background:none}
 #status{color:var(--mut);font-size:14px;margin:8px 2px}
-svg{width:100%;height:auto;display:block;border-radius:12px}
-.row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
-.row:last-child{border:0}
-.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:22px;flex:none}
-.nm{font-weight:600}.sub{color:var(--mut);font-size:13px}
-.empty{color:var(--mut);text-align:center;padding:16px 0}
-.opt svg{width:36px;height:20px;vertical-align:middle;margin-right:6px;display:inline-block}
-.cc{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:14px;margin-bottom:10px}
-input[type=color]{width:44px;height:34px;border:0;padding:0;background:none}
+.row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line)}
+.row .nm{font-weight:600}.sub{color:var(--mut);font-size:13px}
+.pw{text-align:center;width:90px}
+.pin{display:inline-block;width:52px;height:34px;padding:5px 5px;background:#fff;border:3px solid;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.pin svg{width:40px;height:22px;display:block}
+.lb{margin-top:2px;display:inline-block;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(255,255,255,.92);color:#111;font-size:12px;font-weight:700;padding:1px 7px;border-radius:8px}
 </style>
 </head>
 <body>
-<h1>🗺️ Convoy Map</h1>
-<div class="card"><svg id="map" viewBox="0 0 400 300" role="img" aria-label="Mapa ng mga sasakyan"></svg></div>
-
-<div class="card perm" id="perm" hidden>
-  <h2>📍 GPS PERMISSION</h2>
-  <div id="permAsk" hidden>
-    <p>Kailangan ng app ang lokasyon mo para lumabas ang sasakyan sa mapa.</p>
-    <button id="permBtn">Payagan ang GPS</button>
-  </div>
-  <div id="permDeny" hidden>
-    <p id="permMsg">Naka-block ang location. Hindi na ito matatanong ulit ng browser, kaya i-allow mo muna dito:</p>
-    <ol id="permSteps"><li>Pindutin ang 🔒 / ⓘ sa tabi ng address bar</li><li>Permissions → Location → <b>Allow</b></li><li>Bumalik dito at pindutin ang button sa baba</li></ol>
-    <button id="permRetry">Nag-allow na ako – subukan ulit</button>
-  </div>
-</div>
-
-<div class="card">
-  <h2>SASAKYAN MO</h2>
+<div id="app">
+<div id="setup">
+  <h1 style="margin:0 0 12px;font-size:22px">🗺️ Convoy Map</h1>
   <input type="text" id="vname" maxlength="20" placeholder="Pangalan (hal. Kotse ni Ben)">
   <input type="text" id="vq" placeholder="Hanapin ang uri (hal. jeep, bangka, trike)">
-  <div class="opts" id="types" style="max-height:176px;overflow-y:auto"></div>
+  <div class="opts" id="types" style="max-height:260px;overflow-y:auto"></div>
   <div class="opts" id="colors"></div>
   <label class="cc">Sariling kulay: <input type="color" id="cc" value="#2563eb"></label>
-  <button id="share">Buksan ang GPS ng sasakyan</button>
-  <div id="status">Loading…</div>
+  <div id="status">Pumili ng uri ng sasakyan, tapos pindutin ang GO para lumabas sa mapa.</div>
 </div>
-
-<div class="card" id="list"><div class="empty">Wala pang naka-GPS.</div></div>
-
+<div id="gobar"><button id="share">Pumili muna ng sasakyan</button></div>
+<div id="live">
+  <div id="map"></div>
+  <div id="panel">
+    <div class="bar"><button class="sm" id="stop" style="color:#dc2626">Itigil</button><button class="sm" id="inv">Imbitahin</button><button class="sm" id="fit">Fit lahat</button><button class="sm" id="trf">🚦 Traffic</button></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px"><input type="text" id="dq" placeholder="Saan pupunta? (hal. SM Fairview)" style="margin:0;flex:1"><button class="sm" id="dgo">Hanapin</button></div>
+    <div id="dres"></div>
+    <div id="dinfo" class="sub" style="margin-bottom:6px"></div>
+    <button class="sm" id="dclr" style="display:none;margin-bottom:8px">Alisin ang destinasyon</button>
+    <div id="st2" class="sub"></div>
+    <div id="list"></div>
+  </div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 (function(){
 var TYPES=[["car","Kotse","sedan car auto"],["hatch","Hatchback","kotse"],["sports","Sports car","sedan racing"],["suv","SUV","crossover fortuner"],["pickup","Pickup","hilux ranger strada"],["van","Van","l300 hiace"],["jeep","Jeep","owner type"],["jeepney","Jeepney","dyip pampasahero"],["taxi","Taxi","grab cab"],["ambulance","Ambulansya","rescue"],["police","Pulis","police patrol"],["truck","Truck","trak cargo"],["dump","Dump truck","construction"],["trailer","Trailer","container 10 wheeler"],["firetruck","Bumbero","fire truck"],["bus","Bus","coaster"],["tractor","Traktora","farm"],["motor","Motor","motorsiklo motorcycle"],["scooter","Scooter","nmax click"],["bike","Bisikleta","bicycle bike"],["tricycle","Tricycle","trike sidecar"],["boat","Bangka","boat barko"],["helicopter","Helicopter","chopper"],["plane","Eroplano","plane"],["etrike","E-trike","electric tricycle ev e-trike"],["rv","RV","camper motorhome"],["kuliglig","Kuliglig","walking tractor"]];
@@ -104,129 +103,160 @@ ICONS.rv="<rect x='2' y='4' width='36' height='13' rx='3' fill='COL'"+S+"/><path
 ICONS.kuliglig="<circle cx='8' cy='15' r='4.5' fill='#222'/><path d='M8 14L14 5H18' fill='none' stroke='#222' stroke-width='2'/><rect x='9' y='8' width='8' height='5' rx='1.5' fill='COL'"+S+"/><path d='M20 15V8H38V15Z' fill='COL'"+S+"/><circle cx='29' cy='16' r='3.5' fill='#222'/>";
 function ico(t,c){return (ICONS[t]||ICONS.car).replace(/COL/g,c||"#2563eb")}
 var COLS=["#2563eb","#dc2626","#16a34a","#d97706","#7c3aed","#db2777","#0891b2","#475569"];
-var db=null,user=null,myId="me",people={},names={},watchId=null,lastWrite=0,sharing=false,lastPos=null;
-var veh={n:"",t:"",c:COLS[0]},Q="";
 var $=function(i){return document.getElementById(i)};
-try{var sv=JSON.parse(localStorage.getItem("veh")||"null");if(sv&&ICONS[sv.t]&&sv.c)veh=sv}catch(e){}
-function save(){try{localStorage.setItem("veh",JSON.stringify(veh))}catch(e){}}
-function status(t){$("status").textContent=t}
 function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
+var veh={n:"",t:"",c:COLS[0]},Q="";
+try{var sv=JSON.parse(localStorage.getItem("convoyVeh")||"null");if(sv&&ICONS[sv.t]&&/^#[0-9a-f]{6}$/i.test(sv.c))veh=sv}catch(e){}
+function saveV(){try{localStorage.setItem("convoyVeh",JSON.stringify(veh))}catch(e){}}
+var myId=null;try{myId=localStorage.getItem("convoyId")}catch(e){}
+function rnd(){return Math.random().toString(36).slice(2,8)}
+if(!myId){myId=rnd()+rnd();try{localStorage.setItem("convoyId",myId)}catch(e){}}
+var room=(location.hash||"").slice(1).replace(/[^a-z0-9]/gi,"").toLowerCase();
+if(room.length<8){room=rnd()+rnd();try{history.replaceState(null,"","#"+room)}catch(e){try{location.hash=room}catch(e2){}}}
+var base="https://ntfy.sh/convoy-"+room;
+function status(t){$("status").textContent=t;$("st2").textContent=t}
+function typeLabel(){var f=TYPES.filter(function(t){return t[0]===veh.t})[0];return f?f[1]:"Sasakyan"}
+
+var map=L.map("map").setView([12.9,121.8],5);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(map);
+map.on("dragstart",function(){userMoved=true});
+var dest=null,destTs=0,destMk=null,routeLn=null,routeFrom=null,routeAt=0,tfl=null,lastRes=[],userMoved=false,people={},markers={},watchId=null,sharing=false,lastPos=null,lastSend=0,fitT=null,wl=null;
+
+function clean(d){
+  if(!d||typeof d.lat!=="number"||typeof d.lng!=="number"||typeof d.id!=="string")return null;
+  return{id:d.id.slice(0,20),n:String(d.n||"Sasakyan").slice(0,24),v:ICONS[d.v]?d.v:"car",c:/^#[0-9a-f]{6}$/i.test(d.c)?d.c:"#2563eb",lat:d.lat,lng:d.lng,ts:+d.ts||Date.now()};
+}
+function pinHtml(d){return '<div class="pw"><div class="pin" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb">'+esc(d.n)+'</div></div>'}
+function upsert(d){
+  people[d.id]=d;var ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d),className:"",iconSize:[90,60],iconAnchor:[45,20]});
+  if(markers[d.id]){markers[d.id].setLatLng(ll);markers[d.id].setIcon(ic)}else markers[d.id]=L.marker(ll,{icon:ic}).addTo(map);
+  markers[d.id].setOpacity(Date.now()-d.ts>120000?.5:1);
+}
+function drop(id){delete people[id];if(markers[id]){map.removeLayer(markers[id]);delete markers[id]}}
+function fitAll(){var ids=Object.keys(people);if(!ids.length||!document.body.classList.contains("live"))return;
+  var pts=ids.map(function(i){return[people[i].lat,people[i].lng]});if(dest)pts.push([dest.lat,dest.lng]);
+  var b=L.latLngBounds(pts);
+  pts.length===1?map.setView(b.getCenter(),16):map.fitBounds(b,{padding:[60,60],maxZoom:17})}
+function handle(d){
+  if(d&&d.off){drop(String(d.id));renderList();return}
+  var raw=d;d=clean(d);if(!d||Date.now()-d.ts>1800000)return;
+  syncDest(raw);
+  var isNew=!people[d.id];upsert(d);renderList();if(d.id===myId)doRoute();
+  if(isNew&&!userMoved){clearTimeout(fitT);fitT=setTimeout(fitAll,700)}
+}
 function dist(a,b){var R=6371000,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lng-a.lng)*r;
-var x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x))}
+  var x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x))}
 function fmtD(m){return m<1000?Math.round(m)+" m":(m/1000).toFixed(m<10000?1:0)+" km"}
-function ago(t){var s=Math.max(0,(Date.now()-t)/1000);if(s<60)return"ngayon lang";if(s<3600)return Math.round(s/60)+" min ang nakaraan";return Math.round(s/3600)+" oras ang nakaraan"}
-function vname(i){var p=people[i];return (p&&p.vn)||"Sasakyan"}
+function ago(t){var s=Math.max(0,(Date.now()-t)/1000);if(s<30)return"live";if(s<3600)return Math.round(s/60)+" min ang nakaraan";return Math.round(s/3600)+" oras ang nakaraan"}
+function renderList(){
+  var ids=Object.keys(people),me=people[myId];
+  if(!ids.length){$("list").innerHTML='<div class="sub" style="text-align:center;padding:12px">Wala pang naka-GPS.</div>';return}
+  ids.sort(function(a,b){return a===myId?-1:b===myId?1:people[b].ts-people[a].ts});
+  $("list").innerHTML=ids.map(function(i){var p=people[i],d=(me&&i!==myId)?" · "+fmtD(dist(me,p))+" ang layo":"";
+    return '<div class="row" data-id="'+esc(i)+'"><svg viewBox="0 0 40 22" width="52" height="29" style="flex:none">'+ico(p.v,p.c)+'</svg><div><div class="nm">'+esc(p.n)+(i===myId?" (ikaw)":"")+'</div><div class="sub">'+ago(p.ts)+d+'</div></div></div>'}).join("");
+}
+$("list").addEventListener("click",function(e){var r=e.target.closest("[data-id]");if(!r)return;var p=people[r.dataset.id];if(p){userMoved=true;map.setView([p.lat,p.lng],17)}});
+$("fit").onclick=function(){userMoved=false;fitAll()};
+$("inv").onclick=function(){var u=location.href;
+  if(navigator.share)navigator.share({title:"Convoy Map",text:"Sumali sa convoy map namin:",url:u}).catch(function(){});
+  else if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){status("Na-copy ang link. I-paste sa kasama mo.")});
+  else prompt("Kopyahin ang link:",u)};
+
+var TOMTOM_KEY=""; /* ilagay dito ang libreng TomTom API key para sa live traffic */
+function syncDest(r){
+  if(r.dts===undefined||!(r.dts>destTs))return;
+  dest=(r.dest&&typeof r.dest.lat==="number"&&typeof r.dest.lng==="number")?{lat:r.dest.lat,lng:r.dest.lng,name:String(r.dest.name||"Destinasyon").slice(0,40)}:null;
+  destTs=r.dts;drawDest();
+}
+function setDest(d){dest=d;destTs=Date.now();userMoved=false;drawDest();if(sharing)push(true)}
+function drawDest(){
+  if(destMk){map.removeLayer(destMk);destMk=null}
+  if(routeLn){map.removeLayer(routeLn);routeLn=null}
+  $("dclr").style.display=dest?"":"none";
+  if(!dest){$("dinfo").textContent="";return}
+  destMk=L.marker([dest.lat,dest.lng],{icon:L.divIcon({html:'<div class="pw"><div style="font-size:30px;line-height:30px">📍</div><div class="lb">'+esc(dest.name)+'</div></div>',className:"",iconSize:[90,60],iconAnchor:[45,28]})}).addTo(map);
+  $("dinfo").textContent="📍 "+dest.name;
+  routeFrom=null;doRoute();if(!userMoved)fitAll();
+}
+function doRoute(){
+  var me=people[myId];if(!dest||!me)return;
+  var now=Date.now();if(routeFrom&&dist(routeFrom,me)<200&&now-routeAt<90000)return;
+  routeFrom={lat:me.lat,lng:me.lng};routeAt=now;var tgt=dest;
+  fetch("https://router.project-osrm.org/route/v1/driving/"+me.lng+","+me.lat+";"+dest.lng+","+dest.lat+"?overview=full&geometries=geojson")
+  .then(function(r){return r.json()}).then(function(j){
+    if(tgt!==dest||!j.routes||!j.routes[0])return;var r=j.routes[0];
+    if(routeLn)map.removeLayer(routeLn);
+    routeLn=L.geoJSON(r.geometry,{style:{color:"#2563eb",weight:6,opacity:.85}}).addTo(map);
+    $("dinfo").textContent="📍 "+dest.name+" · "+fmtD(r.distance)+" · mga "+Math.max(1,Math.round(r.duration/60))+" min (estimate, walang traffic)";
+  }).catch(function(){if(tgt===dest)$("dinfo").textContent="📍 "+dest.name+" · hindi makuha ang ruta ngayon"});
+}
+function search(){
+  var q=$("dq").value.trim();if(!q)return;$("dres").innerHTML='<div class="sub">Naghahanap…</div>';
+  var b=map.getBounds();
+  fetch("https://nominatim.openstreetmap.org/search?format=json&limit=5&q="+encodeURIComponent(q)+"&viewbox="+[b.getWest(),b.getNorth(),b.getEast(),b.getSouth()].join(","))
+  .then(function(r){return r.json()}).then(function(j){
+    lastRes=j||[];
+    $("dres").innerHTML=lastRes.length?lastRes.map(function(r,i){return '<button class="sm" data-i="'+i+'" style="display:block;width:100%;text-align:left;margin-bottom:6px">'+esc(r.display_name.split(",").slice(0,3).join(","))+'</button>'}).join(""):'<div class="sub">Walang nahanap.</div>';
+  }).catch(function(){$("dres").innerHTML='<div class="sub">Hindi makapaghanap ngayon.</div>'});
+}
+$("dgo").onclick=search;
+$("dq").onkeydown=function(e){if(e.key==="Enter")search()};
+$("dres").onclick=function(e){var b=e.target.closest("[data-i]");if(!b)return;var r=lastRes[+b.dataset.i];if(!r)return;
+  $("dres").innerHTML="";$("dq").value="";setDest({lat:+r.lat,lng:+r.lon,name:r.display_name.split(",").slice(0,2).join(",").trim()})};
+$("dclr").onclick=function(){setDest(null)};
+map.on("contextmenu",function(e){setDest({lat:e.latlng.lat,lng:e.latlng.lng,name:"Napiling lugar"})});
+$("trf").onclick=function(){
+  if(!TOMTOM_KEY){status("Para sa live traffic, kailangan ng libreng TomTom API key.");return}
+  if(tfl){map.removeLayer(tfl);tfl=null;$("trf").style.borderColor="";return}
+  tfl=L.tileLayer("https://api.tomtom.com/traffic/map/4/tile/flow/relative/{z}/{x}/{y}.png?key="+TOMTOM_KEY,{maxZoom:19,opacity:.85}).addTo(map);$("trf").style.borderColor="#16a34a"};
+function connect(){
+  var es=new EventSource(base+"/sse?since=20m");
+  es.onmessage=function(e){try{var m=JSON.parse(e.data);if(m.event&&m.event!=="message")return;handle(JSON.parse(m.message))}catch(x){}};
+}
+function send(d){fetch(base,{method:"POST",body:JSON.stringify(d)}).catch(function(){status("Walang internet o hindi maipadala.")})}
+function push(force){
+  if(!lastPos)return;var now=Date.now();if(!force&&now-lastSend<8000)return;lastSend=now;
+  var d={id:myId,n:veh.n||typeLabel(),v:veh.t,c:veh.c,lat:lastPos.coords.latitude,lng:lastPos.coords.longitude,ts:now,dest:dest,dts:destTs};
+  handle(d);send(d);
+}
+function setBtn(){var b=$("share");if(sharing)return;b.disabled=!veh.t;b.style.opacity=veh.t?1:.5;b.className="";b.textContent=veh.t?"GO – Buksan ang GPS":"Pumili muna ng sasakyan"}
+function start(){
+  if(!veh.t){status("Pumili muna ng uri ng sasakyan.");return}
+  if(!navigator.geolocation){status("Hindi kayang mag-GPS ng device na ito.");return}
+  document.body.classList.add("live");try{map.invalidateSize()}catch(e){}userMoved=false;sharing=true;
+  status("Hinahanap ang GPS… lumabas sa bukas na lugar kung matagal.");
+  function ok(p){try{var first=!lastPos;lastPos=p;status("Live ka na sa mapa. Iwanang bukas ang app.");push(first);if(first)setTimeout(fitAll,400)}catch(e){status("May error: "+e.message)}}
+  function bad(e){if(e.code===1){status("Hindi pinayagan ang location. I-enable sa browser settings.");stop(true)}else status("Hinahanap pa ang GPS… i-on ang Location/GPS ng phone.")}
+  navigator.geolocation.getCurrentPosition(ok,function(){},{enableHighAccuracy:false,maximumAge:60000,timeout:15000});
+  watchId=navigator.geolocation.watchPosition(ok,bad,{enableHighAccuracy:true,maximumAge:3000,timeout:30000});
+  $("share").textContent="Itigil ang GPS";$("share").className="sec";
+  try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}catch(e){}
+}
+function stop(keep){
+  document.body.classList.remove("live");
+  if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;sharing=false;
+  try{wl&&wl.release()}catch(e){}wl=null;setBtn();
+  if(!keep){send({id:myId,off:1});drop(myId);renderList();status("Tinigil mo na ang GPS.")}
+}
+$("share").onclick=function(){watchId==null?start():stop(false)};
+$("stop").onclick=function(){stop(false)};
+setInterval(function(){if(sharing)push(true)},15000);
+setInterval(renderList,30000);
 
 function buildPicker(){
   $("vname").value=veh.n;
-  $("types").innerHTML=TYPES.filter(function(t){return (t[1]+" "+t[2]).toLowerCase().indexOf(Q)>-1}).map(function(t){return '<button class="opt'+(veh.t===t[0]?' on':'')+'" data-t="'+t[0]+'"><svg viewBox="0 0 40 22">'+ico(t[0],veh.c)+'</svg>'+t[1]+'</button>'}).join("");
-  $("cc").value=/^#[0-9a-f]{6}$/i.test(veh.c)?veh.c:"#2563eb";setBtn();
+  $("types").innerHTML=TYPES.filter(function(t){return (t[1]+" "+t[2]).toLowerCase().indexOf(Q)>-1}).map(function(t){
+    return '<button class="opt'+(veh.t===t[0]?' on':'')+'" data-t="'+t[0]+'"><svg viewBox="0 0 40 22">'+ico(t[0],veh.c)+'</svg>'+t[1]+'</button>'}).join("");
   $("colors").innerHTML=COLS.map(function(c){return '<button class="sw'+(veh.c===c?' on':'')+'" data-c="'+c+'" style="background:'+c+'" aria-label="Kulay"></button>'}).join("");
+  $("cc").value=veh.c;setBtn();
 }
-$("types").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(!b)return;veh.t=b.dataset.t;changed()});
-$("colors").addEventListener("click",function(e){var b=e.target.closest("[data-c]");if(!b)return;veh.c=b.dataset.c;changed()});
-$("vq").addEventListener("input",function(e){Q=e.target.value.trim().toLowerCase();buildPicker()});
-$("cc").addEventListener("change",function(e){veh.c=e.target.value;changed()});
-$("vname").addEventListener("input",function(e){veh.n=e.target.value;save();clearTimeout(window._nt);window._nt=setTimeout(pushNow,600)});
-function changed(){save();buildPicker();pushNow()}
-function setBtn(){var b=$("share");if(watchId!=null)return;b.disabled=!veh.t;b.style.opacity=veh.t?1:.5;b.textContent=veh.t?"GO – Buksan ang GPS":"Pumili muna ng sasakyan"}
-function pushNow(){if(sharing&&lastPos){lastWrite=0;write(lastPos)}}
-
-function render(){
-  var ids=Object.keys(people),svg=$("map"),s='<rect width="400" height="300" fill="var(--bg)"/>';
-  for(var g=1;g<8;g++)s+='<line x1="'+g*50+'" y1="0" x2="'+g*50+'" y2="300" stroke="var(--grid)"/>';
-  for(var h=1;h<6;h++)s+='<line x1="0" y1="'+h*50+'" x2="400" y2="'+h*50+'" stroke="var(--grid)"/>';
-  if(ids.length){
-    var la=0,lo=0;ids.forEach(function(i){la+=people[i].lat;lo+=people[i].lng});la/=ids.length;lo/=ids.length;
-    var k=Math.cos(la*Math.PI/180);
-    var pts=ids.map(function(i){return{id:i,x:(people[i].lng-lo)*k,y:la-people[i].lat}});
-    var m=Math.max(0.0005,Math.max.apply(null,pts.map(function(p){return Math.max(Math.abs(p.x),Math.abs(p.y)*1.33)})));
-    var sc=150/m*0.8;
-    pts.forEach(function(p){
-      var d=people[p.id],x=200+p.x*sc,y=150+p.y*sc,c=d.vc||"#2563eb",me=p.id===myId;
-      s+='<rect x="'+(x-26)+'" y="'+(y-17)+'" width="52" height="34" rx="12" fill="var(--card)" stroke="'+esc(c)+'" stroke-width="'+(me?4:2.5)+'"/>';
-      s+='<svg x="'+(x-20)+'" y="'+(y-11)+'" width="40" height="22" viewBox="0 0 40 22">'+ico(d.vt,c)+'</svg>';
-      s+='<text x="'+x+'" y="'+(y-24)+'" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">'+esc(vname(p.id))+'</text>';
-    });
-  } else s+='<text x="200" y="155" text-anchor="middle" fill="var(--mut)" font-size="14">Wala pang naka-GPS</text>';
-  svg.innerHTML=s;
-  var L=$("list");
-  if(!ids.length){L.innerHTML='<div class="empty">Wala pang naka-GPS.</div>';return}
-  var me=people[myId];
-  ids.sort(function(a,b){return a===myId?-1:b===myId?1:people[b].t-people[a].t});
-  L.innerHTML=ids.map(function(i){var p=people[i];
-    var dr=i===myId?"Ikaw":(names[i]||"Kasama");
-    var d=(me&&i!==myId)?" · "+fmtD(dist(me,p))+" ang layo":"";
-    return '<div class="row"><svg viewBox="0 0 40 22" width="52" height="29" style="flex:none">'+ico(p.vt,p.vc)+'</svg><div><div class="nm">'+esc(vname(i))+'</div><div class="sub">GPS: '+esc(dr)+' · '+ago(p.t)+d+'</div></div></div>'}).join("");
-}
-async function loadNames(){
-  var ids=Object.keys(people).filter(function(i){return !names[i]});
-  if(!ids.length||!user)return;
-  try{var ps=await user.profiles(ids);ids.forEach(function(i){if(ps[i]&&ps[i].name)names[i]=ps[i].name});render()}catch(e){}
-}
-function write(pos){
-  lastPos=pos;var now=Date.now();if(now-lastWrite<8000)return;lastWrite=now;
-  var d={lat:pos.coords.latitude,lng:pos.coords.longitude,t:now,vn:veh.n||(TYPES.filter(function(t){return t[0]===veh.t})[0]||["","Sasakyan"])[1],vt:veh.t,vc:veh.c};
-  people[myId]=d;render();
-  if(db)db.collection("locations").doc(myId).set(d).catch(function(){status("Hindi na-save ang lokasyon.")});
-}
-function start(){
-  if(!navigator.geolocation){status("Hindi kayang mag-GPS ng device na ito.");return}
-  status("Hinihintay ang GPS…");
-  watchId=navigator.geolocation.watchPosition(function(p){sharing=true;permUI("granted");status(db?"Live na ang lokasyon ng sasakyan. Iwanang bukas ang app.":"Live ang GPS mo. Ikaw lang ang makikita (hindi naka-connect sa shared map).");write(p)},
-    function(e){if(e.code===1){permUI("denied");status("Hindi pinayagan ang location.")}else status("Hindi makuha ang lokasyon.");stop(true)},
-    {enableHighAccuracy:true,maximumAge:5000,timeout:20000});
-  $("share").textContent="Itigil ang GPS";$("share").className="sec";
-}
-function stop(keep){
-  if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;sharing=false;
-  $("share").className="";setBtn();
-  if(!keep&&db&&myId){db.collection("locations").doc(myId).delete().catch(function(){});delete people[myId];render();status("Tinigil mo na ang GPS.")}
-}
-$("share").addEventListener("click",function(){
-  if(watchId==null&&!veh.t){status("Pumili muna ng uri ng sasakyan.");return}
-  watchId==null?start():stop(false);
-});
-function permUI(st){
-  var local=/^(file|content):$/.test(location.protocol)||window.isSecureContext===false;
-  if(st==="denied"&&local){$("permMsg").textContent="Hindi gagana ang GPS kapag binuksan ang file mula sa storage/Files. Buksan ang link ng app (https) sa browser para lumabas ang isang-click na Allow.";$("permSteps").hidden=true}
-  else if(st==="denied"){$("permMsg").textContent="Naka-block ang location. Hindi na ito matatanong ulit ng browser, kaya i-allow mo muna dito:";$("permSteps").hidden=false}
-  $("perm").hidden=(st==="granted"||st==="unsupported");
-  $("permAsk").hidden=(st!=="prompt");
-  $("permDeny").hidden=(st!=="denied");
-}
-function askGps(){
-  if(!navigator.geolocation){permUI("unsupported");return}
-  navigator.geolocation.getCurrentPosition(function(){permUI("granted");if(watchId==null&&veh.t)start()},
-    function(e){if(e.code===1)permUI("denied")},{enableHighAccuracy:true,timeout:20000});
-}
-$("permBtn").addEventListener("click",askGps);
-$("permRetry").addEventListener("click",askGps);
-(function(){
-  if(!navigator.geolocation){permUI("unsupported");return}
-  if(!navigator.permissions||!navigator.permissions.query){permUI("prompt");return}
-  navigator.permissions.query({name:"geolocation"}).then(function(r){
-    permUI(r.state);r.onchange=function(){permUI(r.state)};
-  }).catch(function(){permUI("prompt")});
-})();
-buildPicker();
-(async function(){
-  try{
-    user=await claude.use("user");db=await claude.use("db");
-    if(!db||!user){db=null;user=null;status("Pumili ng sasakyan at pindutin ang GO. (Ikaw lang ang makikita sa mapa.)");return}
-    myId=await user.id();
-    status("Pumili ng uri ng sasakyan, tapos pindutin ang GO para lumabas sa mapa.");
-    var t=setTimeout(function(){status("Matagal mag-load… check ang internet.")},10000);
-    db.collection("locations").onSnapshot(function(snap){
-      clearTimeout(t);var n={};
-      snap.docs.forEach(function(d){var v=d.data();if(v&&typeof v.lat==="number"&&typeof v.lng==="number")n[d.id]=v});
-      if(sharing&&people[myId]&&!n[myId])n[myId]=people[myId];
-      people=n;render();loadNames();
-    },function(){clearTimeout(t);status("Hindi ma-load ang mga sasakyan.")});
-  }catch(e){db=null;user=null;status("Pumili ng sasakyan at pindutin ang GO. (Ikaw lang ang makikita sa mapa.)")}
-})();
-setInterval(render,30000);
-render();
+function changed(){saveV();buildPicker();if(sharing)push(true)}
+$("types").onclick=function(e){var b=e.target.closest("[data-t]");if(b){veh.t=b.dataset.t;changed()}};
+$("colors").onclick=function(e){var b=e.target.closest("[data-c]");if(b){veh.c=b.dataset.c;changed()}};
+$("cc").onchange=function(e){veh.c=e.target.value;changed()};
+$("vq").oninput=function(e){Q=e.target.value.trim().toLowerCase();buildPicker()};
+$("vname").oninput=function(e){veh.n=e.target.value;saveV();clearTimeout(window._nt);window._nt=setTimeout(function(){if(sharing)push(true)},600)};
+buildPicker();renderList();connect();
 })();
 </script>
 </body>
