@@ -65,6 +65,8 @@ body.full #panel,body.full #topbar{display:none}
 .dp{width:110px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 .dp svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
 .leaflet-container{font:inherit}
+body.dk .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}
+body.dk #map{background:#1c1f24}
 </style>
 </head>
 <body>
@@ -154,7 +156,8 @@ var map=L.map("map",{zoomControl:false}).setView([12.9,121.8],5);
 map.attributionControl.setPrefix(false);
 var baseL=null;
 function setBase(){if(baseL)map.removeLayer(baseL);
-  baseL=L.tileLayer("https://{s}.basemaps.cartocdn.com/"+(dark?"dark_all":"rastertiles/voyager")+"/{z}/{x}/{y}@2x.png",{subdomains:"abcd",tileSize:512,zoomOffset:-1,maxZoom:20,attribution:"&copy; OpenStreetMap &copy; CARTO"}).addTo(map);baseL.bringToBack();
+  baseL=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(map);baseL.bringToBack();
+  document.body.classList.toggle("dk",dark);
   $("thm").textContent=dark?"☀️":"🌙"}
 setBase();
 map.on("dragstart",function(){userMoved=true});
