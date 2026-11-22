@@ -76,7 +76,7 @@ body:not(.live) #live{display:none}
 #fab button{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line);box-shadow:var(--sh);transition:transform .1s}
 #fab button:active{transform:scale(.92)}
 #toast{display:none;position:absolute;z-index:1100;left:50%;top:calc(76px + env(safe-area-inset-top,0px));transform:translateX(-50%);max-width:82%;background:rgba(15,23,42,.94);color:#fff;font-size:13.5px;padding:9px 16px;border-radius:14px;text-align:center;box-shadow:var(--sh)}
-#panel{position:absolute;z-index:1000;left:0;right:0;bottom:0;max-height:62%;overflow-y:auto;background:var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:1px solid var(--line);border-radius:26px 26px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);padding:0 16px calc(14px + env(safe-area-inset-bottom,0px))}
+#panel{position:absolute;z-index:1000;left:0;right:0;bottom:0;max-height:62%;overflow-y:auto;background:var(--card);border-top:1px solid var(--line);border-radius:28px 28px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);padding:0 16px calc(14px + env(safe-area-inset-bottom,0px))}
 #hd{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;padding:9px 0 10px;color:var(--mut);font-size:12.5px;font-weight:600}
 .grab{width:38px;height:4.5px;border-radius:3px;background:var(--mut);opacity:.4}
 #panel.min #more{display:none}
@@ -86,11 +86,14 @@ body.full #panel,body.full #topbar{display:none}
 .dpin svg{width:22px;height:22px}
 .dt{min-width:0}
 .dn{font-weight:700;font-size:17px;line-height:1.25;letter-spacing:-.2px}
-.chips{display:flex;gap:8px;margin-top:12px}
-.chip{flex:1;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px 11px}
-.chip b{display:block;font-size:16px;font-weight:700;letter-spacing:-.2px}
-.chip span{font-size:11px;color:var(--mut);font-weight:600}
-.fn{margin-top:8px;font-size:11.5px}
+.nv{display:flex;align-items:center;gap:14px;padding:4px 0 2px}
+.rc{width:56px;height:56px;border-radius:50%;background:var(--text);color:var(--card);display:grid;place-items:center;flex:none}
+.rc svg{width:26px;height:26px;stroke-width:2.6}
+.nvt{flex:1;min-width:0}
+.nvm{font-size:24px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:9px}
+.dk{width:8px;height:8px;border-radius:50%;background:var(--mut);display:inline-block}
+.nvt .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov{padding:14px 18px;border-radius:999px;background:var(--accsoft);color:var(--acc);font-weight:800;font-size:16px;flex:none}
 .hint{background:var(--card);border:1px dashed var(--line);border-radius:15px;padding:11px 14px;color:var(--mut);font-size:13px}
 .bar{display:flex;gap:8px;margin:14px 0 4px}
 .pill{flex:1;padding:12px 10px;border-radius:14px;font-weight:600;font-size:14px;background:var(--card);border:1px solid var(--line);white-space:nowrap}
@@ -115,6 +118,27 @@ body.full #panel,body.full #topbar{display:none}
 .dp{width:110px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 .lb2{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#0f172a;color:#fff;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;margin-bottom:3px;box-shadow:0 1px 5px rgba(0,0,0,.4)}
 .dp svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+:root[data-theme=light] #map .leaflet-tile-pane{filter:saturate(.42) brightness(1.04)}
+.fl{filter:drop-shadow(0 3px 5px rgba(0,0,0,.45))}
+.mw{position:relative;width:100px;height:84px}
+.halo{position:absolute;left:12px;top:-4px;width:76px;height:76px;border-radius:50%;background:rgba(20,184,196,.18);border:1.5px solid rgba(20,184,196,.35)}
+.ar{position:absolute;left:28px;top:12px;width:44px;height:44px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45));transition:transform .4s}
+.mw .lb{top:68px}
+.rlw{width:0;height:0}
+.rl{position:absolute;left:-8px;bottom:10px;white-space:nowrap;background:#4b0fa0;color:#fff;font-weight:700;font-size:14px;padding:6px 12px;border-radius:11px;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.rl::after{content:"";position:absolute;left:10px;bottom:-7px;border:7px solid transparent;border-top-color:#4b0fa0;border-bottom:0}
+#nav{display:none;position:absolute;z-index:1001;left:0;right:0;top:0;background:#000;color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 14px 16px 18px;align-items:center;gap:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+body.nav #nav{display:flex}
+body.nav #topbar{display:none}
+body.nav #fab{top:calc(122px + env(safe-area-inset-top,0px))}
+body.nav #toast{top:calc(130px + env(safe-area-inset-top,0px))}
+body.nav.full #nav{display:none}
+body.nav.full #fab{top:calc(12px + env(safe-area-inset-top,0px))}
+#nav svg{width:54px;height:54px;flex:none}
+.nvb{flex:1;min-width:0}
+#nvd{font-size:36px;font-weight:800;letter-spacing:-.8px;line-height:1.05}
+#nvn{font-size:23px;font-weight:700;color:#22d3ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nvx{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;flex:none;color:#fff}
 </style>
 </head>
 <body>
@@ -142,6 +166,7 @@ body.full #panel,body.full #topbar{display:none}
 
 <div id="live">
   <div id="map"></div>
+  <div id="nav"><svg id="nvs" viewBox="0 0 48 48"></svg><div class="nvb"><div id="nvd">—</div><div id="nvn"></div></div><button id="nvx" aria-label="Alisin ang destinasyon"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div id="topbar">
     <div id="sb"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="text" id="dq" placeholder="Saan pupunta?"><button id="dgo">Hanapin</button></div>
     <div id="dres"></div>
@@ -242,16 +267,20 @@ function setBase(fb){
   ls[0].on("tileerror",function(){if(!fb&&++errN===8){toast("Hindi ma-load ang mapa. OpenStreetMap muna ang gamit.");setBase(true)}});
 }
 setBase();
-map.on("dragstart",function(){userMoved=true});
+var follow=false,routeSteps=null,rlG=null;
+map.on("dragstart",function(){userMoved=true;follow=false});
 var dest=null,destTs=0,destMk=null,routeLn=null,routeB=null,routeFrom=null,routeAt=0,refit=false,tfl=null,lastRes=[],userMoved=false,people={},markers={},watchId=null,sharing=false,lastPos=null,lastSend=0,fitT=null,wl=null;
 
 function clean(d){
   if(!d||typeof d.lat!=="number"||typeof d.lng!=="number"||typeof d.id!=="string")return null;
-  return{id:d.id.slice(0,20),n:String(d.n||"Sasakyan").slice(0,24),v:ICONS[d.v]?d.v:"car",c:/^#[0-9a-f]{6}$/i.test(d.c)?d.c:"#2563eb",lat:d.lat,lng:d.lng,ts:+d.ts||Date.now()};
+  return{id:d.id.slice(0,20),n:String(d.n||"Sasakyan").slice(0,24),v:ICONS[d.v]?d.v:"car",c:/^#[0-9a-f]{6}$/i.test(d.c)?d.c:"#2563eb",lat:d.lat,lng:d.lng,ts:+d.ts||Date.now(),h:(typeof d.h==="number"&&isFinite(d.h))?d.h:null};
 }
-function pinHtml(d,me){return '<div class="pw'+(me?' me':'')+'">'+(me?'<div class="pl" style="background:'+d.c+'"></div>':'')+'<div class="bd" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>'}
+function pinHtml(d,me){
+  if(me)return '<div class="mw"><div class="halo"></div><svg class="ar" viewBox="0 0 40 40" style="transform:rotate('+(d.h||0)+'deg)"><path d="M20 3L34 34L20 26.5L6 34Z" fill="#14b8c4" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>';
+  return '<div class="pw"><div class="bd" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>'}
 function upsert(d){
-  people[d.id]=d;var ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d,d.id===myId),className:"",iconSize:[100,76],iconAnchor:[50,24]});
+  if(d.h==null&&people[d.id])d.h=people[d.id].h;
+  people[d.id]=d;var isMe=d.id===myId,ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d,isMe),className:"",iconSize:[100,84],iconAnchor:[50,isMe?34:24]});
   if(markers[d.id]){markers[d.id].setLatLng(ll);markers[d.id].setIcon(ic)}else markers[d.id]=L.marker(ll,{icon:ic,zIndexOffset:d.id===myId?1000:0}).addTo(map);
   markers[d.id].setOpacity(Date.now()-d.ts>120000?.5:1);
 }
@@ -260,14 +289,14 @@ function fitAll(){
   if(!live())return;var ids=Object.keys(people);
   var pts=ids.map(function(i){return[people[i].lat,people[i].lng]});if(dest)pts.push([dest.lat,dest.lng]);if(!pts.length)return;
   var b=L.latLngBounds(pts);if(routeB)b.extend(routeB);
-  var full=document.body.classList.contains("full"),bot=(full?0:$("panel").offsetHeight)+24,top=full?30:90;
+  var full=document.body.classList.contains("full"),bot=(full?0:$("panel").offsetHeight)+24,top=full?30:(document.body.classList.contains("nav")?150:90);
   if(pts.length===1&&!routeB)map.setView(b.getCenter(),16);else map.fitBounds(b,{paddingTopLeft:[40,top],paddingBottomRight:[70,bot],maxZoom:17});
 }
 function handle(d){
   if(d&&d.off){drop(String(d.id));renderList();return}
   var raw=d;d=clean(d);if(!d||Date.now()-d.ts>1800000)return;
   syncDest(raw);
-  var isNew=!people[d.id];upsert(d);renderList();if(d.id===myId)doRoute();
+  var isNew=!people[d.id];upsert(d);renderList();if(d.id===myId){doRoute();updateBanner();if(follow&&live())map.setView([d.lat,d.lng],Math.max(map.getZoom(),16))}
   if(isNew&&!userMoved){clearTimeout(fitT);fitT=setTimeout(fitAll,700)}
 }
 function dist(a,b){var R=6371000,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lng-a.lng)*r;
@@ -283,7 +312,7 @@ function renderList(){
     return '<div class="row" data-id="'+esc(i)+'"><div class="av" style="border-color:'+p.c+'"><svg viewBox="0 0 40 22">'+ico(p.v,p.c)+'</svg></div><div><div class="nm">'+esc(p.n)+(i===myId?" (ikaw)":"")+'</div><div class="sub">'+ago(p.ts)+d+'</div></div></div>'}).join("");
 }
 $("list").addEventListener("click",function(e){var r=e.target.closest("[data-id]");if(!r)return;var p=people[r.dataset.id];if(p){userMoved=true;map.setView([p.lat,p.lng],17)}});
-$("fit").onclick=function(){userMoved=false;fitAll()};
+$("fit").onclick=function(){follow=false;userMoved=false;fitAll()};
 $("hd").onclick=function(){$("panel").classList.toggle("min");hdLabel()};
 $("thm").onclick=function(){mode=MODES[(MODES.indexOf(mode)+1)%MODES.length];try{localStorage.setItem("convoyMode",mode)}catch(e){}applyUI();setBase();toast(MN[mode])};
 $("full").onclick=function(){document.body.classList.toggle("full");if(!userMoved)setTimeout(fitAll,150)};
@@ -305,29 +334,31 @@ function setDest(d){dest=d;destTs=Date.now();userMoved=false;drawDest();if(shari
 var PINSVG='<svg viewBox="0 0 24 32"><path d="M12 0C5.4 0 0 5.2 0 11.7 0 20 12 32 12 32s12-12 12-20.3C24 5.2 18.6 0 12 0z" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg>';
 function showInfo(stat,c){
   if(!dest){$("dinfo").innerHTML='<div class="hint">Maghanap sa taas o pindutin nang matagal ang mapa para maglagay ng destinasyon.</div>';return}
-  $("dinfo").innerHTML='<div class="dc"><div class="dpin">'+PINSVG+'</div><div class="dt"><div class="dn">'+esc(dest.name)+'</div><div class="sub">'+(c?"Pinakamabilis na ruta":esc(stat||""))+'</div></div></div>'+
-    (c?'<div class="chips"><div class="chip"><b>'+c.d+'</b><span>Layo</span></div><div class="chip"><b>'+c.m+'</b><span>Biyahe</span></div><div class="chip"><b>'+c.e+'</b><span>Dating</span></div></div><div class="sub fn">Estimate lang, walang traffic.</div>':'');
+  if(c){$("dinfo").innerHTML='<div class="nv"><button class="rc" id="rc" aria-label="Re-center"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button><div class="nvt"><div class="nvm">'+c.m+'<i class="dk"></i>'+c.d+'</div><div class="sub">Dating '+c.e+' · '+esc(dest.name)+'</div></div><button class="ov" id="ov">Overview</button></div>';return}
+  $("dinfo").innerHTML='<div class="dc"><div class="dpin">'+FLAG(30)+'</div><div class="dt"><div class="dn">'+esc(dest.name)+'</div><div class="sub">'+esc(stat||"")+'</div></div></div>'+
+    '';
 }
 function drawDest(){
   if(destMk){map.removeLayer(destMk);destMk=null}
   if(routeLn){map.removeLayer(routeLn);routeLn=null}routeB=null;
+  if(rlG){map.removeLayer(rlG);rlG=null}routeSteps=null;updateBanner();
   $("dclr").style.display=dest?"":"none";
   if(!dest){showInfo("");return}
-  destMk=L.marker([dest.lat,dest.lng],{zIndexOffset:500,icon:L.divIcon({className:"",iconSize:[110,76],iconAnchor:[55,76],
-    html:'<div class="dp"><div class="lb2">'+esc(dest.name)+'</div><svg viewBox="0 0 24 32" width="34" height="44"><path d="M12 0C5.4 0 0 5.2 0 11.7 0 20 12 32 12 32s12-12 12-20.3C24 5.2 18.6 0 12 0z" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg></div>'})}).addTo(map);
+  destMk=L.marker([dest.lat,dest.lng],{zIndexOffset:500,icon:L.divIcon({className:"",iconSize:[44,44],iconAnchor:[22,22],
+    html:'<div class="fl">'+FLAG(44)+'</div>'})}).addTo(map);
   showInfo("Hinahanap ang ruta…");refit=true;routeFrom=null;doRoute();if(!userMoved)fitAll();
 }
 function doRoute(){
   var me=people[myId];if(!dest||!me)return;
   var now=Date.now();if(routeFrom&&dist(routeFrom,me)<200&&now-routeAt<90000)return;
   routeFrom={lat:me.lat,lng:me.lng};routeAt=now;var tgt=dest;
-  fetch("https://router.project-osrm.org/route/v1/driving/"+me.lng+","+me.lat+";"+dest.lng+","+dest.lat+"?overview=full&geometries=geojson")
+  fetch("https://router.project-osrm.org/route/v1/driving/"+me.lng+","+me.lat+";"+dest.lng+","+dest.lat+"?overview=full&geometries=geojson&steps=true")
   .then(function(r){return r.json()}).then(function(j){
     if(tgt!==dest||!j.routes||!j.routes[0])return;var r=j.routes[0];
     if(routeLn)map.removeLayer(routeLn);
     var st={lineCap:"round",lineJoin:"round"};
-    var c=L.geoJSON(r.geometry,{style:Object.assign({color:"#ffffff",weight:11,opacity:.95},st)}),l=L.geoJSON(r.geometry,{style:Object.assign({color:"#2563eb",weight:6.5,opacity:1},st)});
-    routeLn=L.layerGroup([c,l]).addTo(map);routeB=l.getBounds();
+    var c=L.geoJSON(r.geometry,{style:Object.assign({color:"#2e0a6b",weight:14,opacity:.95},st)}),l=L.geoJSON(r.geometry,{style:Object.assign({color:"#7c3aed",weight:9,opacity:1},st)});
+    routeLn=L.layerGroup([c,l]).addTo(map);routeB=l.getBounds();buildSteps(r);
     var mins=Math.max(1,Math.round(r.duration/60)),eta=new Date(Date.now()+r.duration*1000).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
     showInfo("",{d:fmtD(r.distance),m:mins+" min",e:eta});
     if(refit){refit=false;if(!userMoved)fitAll()}
@@ -356,7 +387,7 @@ function connect(){
 function send(d){fetch(base,{method:"POST",body:JSON.stringify(d)}).catch(function(){status("Walang internet o hindi maipadala.")})}
 function push(force){
   if(!lastPos)return;var now=Date.now();if(!force&&now-lastSend<8000)return;lastSend=now;
-  var d={id:myId,n:veh.n||typeLabel(),v:veh.t,c:veh.c,lat:lastPos.coords.latitude,lng:lastPos.coords.longitude,ts:now,dest:dest,dts:destTs};
+  var d={id:myId,n:veh.n||typeLabel(),v:veh.t,c:veh.c,lat:lastPos.coords.latitude,lng:lastPos.coords.longitude,h:(typeof lastPos.coords.heading==="number"&&isFinite(lastPos.coords.heading))?Math.round(lastPos.coords.heading):null,ts:now,dest:dest,dts:destTs};
   handle(d);send(d);
 }
 function setBtn(){var b=$("share");if(sharing)return;b.disabled=!veh.t;b.style.opacity=1;b.className="";b.textContent=veh.t?"GO · Buksan ang GPS":"Pumili muna ng sasakyan"}
@@ -373,7 +404,7 @@ function start(){
   try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}catch(e){}
 }
 function stop(keep){
-  document.body.classList.remove("live","full");
+  document.body.classList.remove("live","full","nav");
   if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;sharing=false;lastPos=null;
   try{wl&&wl.release()}catch(e){}wl=null;setBtn();
   if(!keep){send({id:myId,off:1});drop(myId);renderList();$("status").textContent="Tinigil mo na ang GPS."}
@@ -401,6 +432,35 @@ $("colors").onclick=function(e){var b=e.target.closest("[data-c]");if(b){veh.c=b
 $("cc").onchange=function(e){veh.c=e.target.value;changed()};
 $("vq").oninput=function(e){Q=e.target.value.trim().toLowerCase();buildPicker()};
 $("vname").oninput=function(e){veh.n=e.target.value;saveV();$("pvn").textContent=veh.n||(veh.t?typeLabel():"Ang sasakyan mo");clearTimeout(window._nt);window._nt=setTimeout(function(){if(sharing)push(true)},600)};
+function FLAG(s){var q="";for(var i=0;i<4;i++)for(var j=0;j<4;j++)if((i+j)%2)q+='<rect x="'+(4+8*i)+'" y="'+(4+8*j)+'" width="8" height="8" fill="#111"/>';
+  return '<svg viewBox="0 0 40 40" width="'+s+'" height="'+s+'"><defs><clipPath id="cfl"><circle cx="20" cy="20" r="16"/></clipPath></defs><circle cx="20" cy="20" r="19" fill="#fff"/><g clip-path="url(#cfl)"><rect x="4" y="4" width="32" height="32" fill="#fff"/>'+q+'</g><circle cx="20" cy="20" r="16" fill="none" stroke="#111" stroke-width="1.5"/></svg>'}
+var ARR={right:"M14 42V28a10 10 0 0 1 10-10h14M30 9l9 9-9 9",left:"M34 42V28a10 10 0 0 0-10-10H10M18 9l-9 9 9 9",straight:"M24 42V8M12 20L24 8l12 12",sr:"M16 42V28L32 14M22 12h12v12",sl:"M32 42V28L16 14M26 12H14v12",uturn:"M14 42V20a10 10 0 0 1 20 0v6M26 20l8 8 8-8",arrive:"M14 8v34M14 10h22l-5 8 5 8H14"};
+function arrKey(m){if(m.type==="arrive")return"arrive";var x=m.modifier||"straight";if(x==="uturn")return"uturn";if(x==="slight right")return"sr";if(x==="slight left")return"sl";if(x.indexOf("right")>-1)return"right";if(x.indexOf("left")>-1)return"left";return"straight"}
+function updateBanner(){
+  var me=people[myId],ok=!!(dest&&routeSteps&&routeSteps.length&&me);
+  document.body.classList.toggle("nav",ok);if(!ok)return;
+  var best=1e12,j=0;
+  routeSteps.forEach(function(s,i){if(!s.geometry)return;s.geometry.coordinates.forEach(function(c){var d=dist(me,{lat:c[1],lng:c[0]});if(d<best){best=d;j=i}})});
+  var nx=routeSteps[j+1]||routeSteps[j],mv=nx.maneuver,m=mv.location,k=arrKey(mv);
+  $("nvs").innerHTML='<path d="'+ARR[k]+'" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+  $("nvd").textContent=fmtD(dist(me,{lat:m[1],lng:m[0]}));
+  $("nvn").textContent=k==="arrive"?dest.name:(nx.name||"Magpatuloy");
+}
+function buildSteps(r){
+  if(rlG){map.removeLayer(rlG);rlG=null}
+  var st=(r.legs&&r.legs[0]&&r.legs[0].steps)||[],ms=[],last="";routeSteps=st;
+  st.forEach(function(s,i){if(i===0||!s.name||s.name===last||s.distance<120||s.maneuver.type==="arrive"||!s.geometry)return;last=s.name;
+    var cs=s.geometry.coordinates,m=cs[Math.floor(cs.length/2)],nm=s.name.length>26?s.name.slice(0,25)+"…":s.name;
+    ms.push(L.marker([m[1],m[0]],{interactive:false,keyboard:false,zIndexOffset:200,icon:L.divIcon({className:"rlw",iconSize:[0,0],html:'<div class="rl">'+esc(nm)+'</div>'})}))});
+  rlG=L.layerGroup(ms);syncLabels();updateBanner();
+}
+function syncLabels(){if(!rlG)return;if(map.getZoom()>=14){if(!map.hasLayer(rlG))rlG.addTo(map)}else if(map.hasLayer(rlG))map.removeLayer(rlG)}
+map.on("zoomend",syncLabels);
+$("dinfo").onclick=function(e){
+  if(e.target.closest("#rc")){var me=people[myId];follow=true;userMoved=true;if(me)map.setView([me.lat,me.lng],Math.max(map.getZoom(),16))}
+  else if(e.target.closest("#ov")){follow=false;userMoved=false;fitAll()}
+};
+$("nvx").onclick=function(){setDest(null)};
 buildPicker();renderList();showInfo("");connect();
 })();
 </script>
