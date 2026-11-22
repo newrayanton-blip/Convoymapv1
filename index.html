@@ -12,18 +12,8 @@
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 #app{display:flex;flex-direction:column;height:100dvh}
-#map{flex:1 1 auto;min-height:0}
-#setup{flex:1;overflow-y:auto;padding:16px 14px 8px}
-#gobar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--bg)}
-#gobar button{font-size:18px;padding:16px}
-#live{flex:1;display:flex;flex-direction:column;min-height:0}
-body.live #setup,body.live #gobar{display:none}
-body:not(.live) #live{display:none}
-.bar button{flex:1}
-#panel{flex:0 0 auto;max-height:46%;overflow-y:auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
-.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}.bar b{flex:1;font-size:18px}
 button{font:inherit;border:0;border-radius:12px;padding:12px 16px;background:var(--acc);color:#fff;width:100%;font-weight:600}
-button.sm{width:auto;padding:7px 12px;font-size:14px;background:var(--card);color:var(--text);border:1px solid var(--line)}
+button.sm{width:auto;padding:8px 12px;font-size:14px;background:var(--card);color:var(--text);border:1px solid var(--line)}
 button.sec{background:transparent;color:var(--mut);border:1px solid var(--line)}
 input[type=text]{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);margin-bottom:8px}
 .opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
@@ -34,12 +24,47 @@ input[type=text]{font:inherit;width:100%;padding:10px 12px;border-radius:12px;bo
 .cc{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:14px;margin-bottom:8px}
 input[type=color]{width:44px;height:32px;border:0;padding:0;background:none}
 #status{color:var(--mut);font-size:14px;margin:8px 2px}
+.sub{color:var(--mut);font-size:13px}.nm{font-weight:600}
+#setup{flex:1;overflow-y:auto;padding:16px 14px 8px}
+#gobar{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--bg)}
+#gobar button{font-size:19px;font-weight:700;padding:17px;border-radius:16px;letter-spacing:.3px;background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 6px 18px rgba(22,163,74,.45);transition:transform .1s}
+#gobar button:active{transform:scale(.98)}
+#gobar button:disabled{background:var(--card);color:var(--mut);box-shadow:none;border:1px solid var(--line);font-weight:600}
+#gobar button.sec{background:transparent;color:var(--mut);box-shadow:none;border:1px solid var(--line)}
+#gobar button:not(:disabled):not(.sec){animation:rdy 2s ease-in-out infinite}
+@keyframes rdy{0%,100%{box-shadow:0 6px 18px rgba(22,163,74,.45)}50%{box-shadow:0 6px 26px rgba(22,163,74,.75)}}
+body.live #setup,body.live #gobar{display:none}
+body:not(.live) #live{display:none}
+#live{flex:1;position:relative;min-height:0}
+#map{position:absolute;inset:0;z-index:0;background:#e5e7eb}
+#topbar{position:absolute;z-index:1000;top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:66px}
+#sb{display:flex;gap:6px;background:var(--card);border-radius:14px;padding:5px;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+#sb input{margin:0;border:0;background:transparent;flex:1;min-width:0}
+#sb button{width:auto;padding:8px 14px}
+#dres{background:var(--card);border-radius:14px;margin-top:6px;box-shadow:0 2px 12px rgba(0,0,0,.35);overflow:hidden}
+#dres button,#dres .sub{display:block;width:100%;text-align:left;background:transparent;color:var(--text);border-radius:0;border-bottom:1px solid var(--line);font-weight:500;font-size:15px;padding:11px 14px}
+#dres:empty{display:none}
+#fab{position:absolute;z-index:1000;right:10px;top:calc(10px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:8px}
+#fab button{width:46px;height:46px;padding:0;border-radius:50%;background:var(--card);color:var(--text);font-size:20px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+#toast{display:none;position:absolute;z-index:1100;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translateX(-50%);max-width:80%;background:rgba(17,24,39,.92);color:#fff;font-size:14px;padding:8px 14px;border-radius:12px;text-align:center}
+#panel{position:absolute;z-index:1000;left:0;right:0;bottom:0;max-height:58%;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;box-shadow:0 -4px 18px rgba(0,0,0,.3);padding:4px 14px calc(12px + env(safe-area-inset-bottom,0px))}
+#hd{background:transparent;color:var(--mut);font-size:13px;padding:6px 0 8px;font-weight:500}
+#panel.min #more{display:none}
+body.full #panel,body.full #topbar{display:none}
+.bar{display:flex;gap:8px;margin:8px 0}.bar button{flex:1}
 .row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line)}
-.row .nm{font-weight:600}.sub{color:var(--mut);font-size:13px}
-.pw{text-align:center;width:90px}
-.pin{display:inline-block;width:52px;height:34px;padding:5px 5px;background:#fff;border:3px solid;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
-.pin svg{width:40px;height:22px;display:block}
-.lb{margin-top:2px;display:inline-block;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(255,255,255,.92);color:#111;font-size:12px;font-weight:700;padding:1px 7px;border-radius:8px}
+.pw{position:relative;width:100px;height:70px}
+.ring{position:absolute;left:22px;top:0;width:56px;height:56px;border-radius:50%;border:2px solid}
+.pw svg{position:absolute;left:22px;top:12px;width:56px;height:31px;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+.me .ring{animation:pl 2s ease-out infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(37,99,235,.55)}100%{box-shadow:0 0 0 20px rgba(37,99,235,0)}}
+.lb,.lb2{display:flex;align-items:center;gap:5px;white-space:nowrap;max-width:100px;background:rgba(255,255,255,.95);color:#111;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.lb{position:absolute;left:50%;top:56px;transform:translateX(-50%)}
+.lb i{width:8px;height:8px;border-radius:50%;flex:none}
+.lb2{overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.dp{width:110px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.dp svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+.leaflet-container{font:inherit}
 </style>
 </head>
 <body>
@@ -56,14 +81,18 @@ input[type=color]{width:44px;height:32px;border:0;padding:0;background:none}
 <div id="gobar"><button id="share">Pumili muna ng sasakyan</button></div>
 <div id="live">
   <div id="map"></div>
-  <div id="panel">
-    <div class="bar"><button class="sm" id="stop" style="color:#dc2626">Itigil</button><button class="sm" id="inv">Imbitahin</button><button class="sm" id="fit">Fit lahat</button><button class="sm" id="trf">🚦 Traffic</button></div>
-    <div style="display:flex;gap:8px;margin-bottom:8px"><input type="text" id="dq" placeholder="Saan pupunta? (hal. SM Fairview)" style="margin:0;flex:1"><button class="sm" id="dgo">Hanapin</button></div>
-    <div id="dres"></div>
-    <div id="dinfo" class="sub" style="margin-bottom:6px"></div>
-    <button class="sm" id="dclr" style="display:none;margin-bottom:8px">Alisin ang destinasyon</button>
-    <div id="st2" class="sub"></div>
-    <div id="list"></div>
+  <div id="topbar"><div id="sb"><input type="text" id="dq" placeholder="Saan pupunta?"><button id="dgo">Hanapin</button></div><div id="dres"></div></div>
+  <div id="fab"><button id="fit" aria-label="Fit lahat">🎯</button><button id="trf" aria-label="Traffic">🚦</button><button id="thm" aria-label="Tema">🌙</button><button id="full" aria-label="Full view">⛶</button></div>
+  <div id="toast"></div>
+  <div id="panel" class="min">
+    <button id="hd">▲ Mga sasakyan at opsyon</button>
+    <div id="dinfo"></div>
+    <div id="more">
+      <div class="bar"><button class="sm" id="stop" style="color:#dc2626">Itigil</button><button class="sm" id="inv">Imbitahin</button><button class="sm" id="dclr" style="display:none">Alisin ang destinasyon</button></div>
+      <div id="st2" class="sub"></div>
+      <div id="list"></div>
+      <div class="sub" style="font-size:11px;margin-top:8px">© OpenStreetMap · CARTO · Leaflet</div>
+    </div>
   </div>
 </div>
 </div>
@@ -71,7 +100,7 @@ input[type=color]{width:44px;height:32px;border:0;padding:0;background:none}
 <script>
 (function(){
 var TYPES=[["car","Kotse","sedan car auto"],["hatch","Hatchback","kotse"],["sports","Sports car","sedan racing"],["suv","SUV","crossover fortuner"],["pickup","Pickup","hilux ranger strada"],["van","Van","l300 hiace"],["jeep","Jeep","owner type"],["jeepney","Jeepney","dyip pampasahero"],["taxi","Taxi","grab cab"],["ambulance","Ambulansya","rescue"],["police","Pulis","police patrol"],["truck","Truck","trak cargo"],["dump","Dump truck","construction"],["trailer","Trailer","container 10 wheeler"],["firetruck","Bumbero","fire truck"],["bus","Bus","coaster"],["tractor","Traktora","farm"],["motor","Motor","motorsiklo motorcycle"],["scooter","Scooter","nmax click"],["bike","Bisikleta","bicycle bike"],["tricycle","Tricycle","trike sidecar"],["boat","Bangka","boat barko"],["helicopter","Helicopter","chopper"],["plane","Eroplano","plane"],["etrike","E-trike","electric tricycle ev e-trike"],["rv","RV","camper motorhome"],["kuliglig","Kuliglig","walking tractor"]];
-var S=" stroke='rgba(0,0,0,.35)' stroke-width='.6'",W="<circle cx='10' cy='17.5' r='3.3' fill='#222'/><circle cx='30' cy='17.5' r='3.3' fill='#222'/>",G=" fill='#cfe8ff'";
+var S=" stroke='rgba(0,0,0,.35)' stroke-width='.6'",W="<circle cx='10' cy='17.5' r='3.3' fill='#222'/><circle cx='30' cy='17.5' r='3.3' fill='#222'/><circle cx='10' cy='17.5' r='1.3' fill='#cbd5e1'/><circle cx='30' cy='17.5' r='1.3' fill='#cbd5e1'/>",G=" fill='#cfe8ff'";
 var ICONS={
  car:"<path d='M2 17V12L9 11L13 6H26L31 11L38 12V17Z' fill='COL'"+S+"/><path d='M14 7.5H20V11H11.5ZM21.5 7.5H25.5L28.5 11H21.5Z'"+G+"/>"+W,
  pickup:"<path d='M2 17V10H18V6H28L33 11H38V17Z' fill='COL'"+S+"/><path d='M19.5 7.5H27L30 11H19.5Z'"+G+"/>"+W,
@@ -102,6 +131,7 @@ ICONS.etrike=ICONS.tricycle+"<path d='M30 1L26 6H29L27 9L32 4.5H29Z' fill='#facc
 ICONS.rv="<rect x='2' y='4' width='36' height='13' rx='3' fill='COL'"+S+"/><path d='M5 6.5H14V11H5ZM17 6.5H25V11H17ZM30 6.5H36L37 11H30Z'"+G+"/><path d='M2 13.5H38' stroke='#fff' stroke-width='1.2' opacity='.6'/>"+W;
 ICONS.kuliglig="<circle cx='8' cy='15' r='4.5' fill='#222'/><path d='M8 14L14 5H18' fill='none' stroke='#222' stroke-width='2'/><rect x='9' y='8' width='8' height='5' rx='1.5' fill='COL'"+S+"/><path d='M20 15V8H38V15Z' fill='COL'"+S+"/><circle cx='29' cy='16' r='3.5' fill='#222'/>";
 function ico(t,c){return (ICONS[t]||ICONS.car).replace(/COL/g,c||"#2563eb")}
+var TOMTOM_KEY=""; /* ilagay dito ang libreng TomTom API key para sa live traffic */
 var COLS=["#2563eb","#dc2626","#16a34a","#d97706","#7c3aed","#db2777","#0891b2","#475569"];
 var $=function(i){return document.getElementById(i)};
 function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
@@ -114,29 +144,40 @@ if(!myId){myId=rnd()+rnd();try{localStorage.setItem("convoyId",myId)}catch(e){}}
 var room=(location.hash||"").slice(1).replace(/[^a-z0-9]/gi,"").toLowerCase();
 if(room.length<8){room=rnd()+rnd();try{history.replaceState(null,"","#"+room)}catch(e){try{location.hash=room}catch(e2){}}}
 var base="https://ntfy.sh/convoy-"+room;
-function status(t){$("status").textContent=t;$("st2").textContent=t}
+var tt;function toast(t){if(!document.body.classList.contains("live"))return;var e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(tt);tt=setTimeout(function(){e.style.display="none"},4000)}
+function status(t){$("status").textContent=t;$("st2").textContent=t;toast(t)}
 function typeLabel(){var f=TYPES.filter(function(t){return t[0]===veh.t})[0];return f?f[1]:"Sasakyan"}
+var live=function(){return document.body.classList.contains("live")};
 
-var map=L.map("map").setView([12.9,121.8],5);
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(map);
+var dark=false;try{var dv=localStorage.getItem("convoyDark");dark=dv===null?!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches):dv==="1"}catch(e){}
+var map=L.map("map",{zoomControl:false}).setView([12.9,121.8],5);
+map.attributionControl.setPrefix(false);
+var baseL=null;
+function setBase(){if(baseL)map.removeLayer(baseL);
+  baseL=L.tileLayer("https://{s}.basemaps.cartocdn.com/"+(dark?"dark_all":"rastertiles/voyager")+"/{z}/{x}/{y}@2x.png",{subdomains:"abcd",tileSize:512,zoomOffset:-1,maxZoom:20,attribution:"&copy; OpenStreetMap &copy; CARTO"}).addTo(map);baseL.bringToBack();
+  $("thm").textContent=dark?"☀️":"🌙"}
+setBase();
 map.on("dragstart",function(){userMoved=true});
-var dest=null,destTs=0,destMk=null,routeLn=null,routeFrom=null,routeAt=0,tfl=null,lastRes=[],userMoved=false,people={},markers={},watchId=null,sharing=false,lastPos=null,lastSend=0,fitT=null,wl=null;
+var dest=null,destTs=0,destMk=null,routeLn=null,routeB=null,routeFrom=null,routeAt=0,refit=false,tfl=null,lastRes=[],userMoved=false,people={},markers={},watchId=null,sharing=false,lastPos=null,lastSend=0,fitT=null,wl=null;
 
 function clean(d){
   if(!d||typeof d.lat!=="number"||typeof d.lng!=="number"||typeof d.id!=="string")return null;
   return{id:d.id.slice(0,20),n:String(d.n||"Sasakyan").slice(0,24),v:ICONS[d.v]?d.v:"car",c:/^#[0-9a-f]{6}$/i.test(d.c)?d.c:"#2563eb",lat:d.lat,lng:d.lng,ts:+d.ts||Date.now()};
 }
-function pinHtml(d){return '<div class="pw"><div class="pin" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb">'+esc(d.n)+'</div></div>'}
+function pinHtml(d,me){return '<div class="pw'+(me?' me':'')+'"><div class="ring" style="border-color:'+d.c+';background:'+d.c+'30"></div><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg><div class="lb"><i style="background:'+d.c+'"></i>'+esc(d.n)+'</div></div>'}
 function upsert(d){
-  people[d.id]=d;var ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d),className:"",iconSize:[90,60],iconAnchor:[45,20]});
-  if(markers[d.id]){markers[d.id].setLatLng(ll);markers[d.id].setIcon(ic)}else markers[d.id]=L.marker(ll,{icon:ic}).addTo(map);
+  people[d.id]=d;var ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d,d.id===myId),className:"",iconSize:[100,70],iconAnchor:[50,28]});
+  if(markers[d.id]){markers[d.id].setLatLng(ll);markers[d.id].setIcon(ic)}else markers[d.id]=L.marker(ll,{icon:ic,zIndexOffset:d.id===myId?1000:0}).addTo(map);
   markers[d.id].setOpacity(Date.now()-d.ts>120000?.5:1);
 }
 function drop(id){delete people[id];if(markers[id]){map.removeLayer(markers[id]);delete markers[id]}}
-function fitAll(){var ids=Object.keys(people);if(!ids.length||!document.body.classList.contains("live"))return;
-  var pts=ids.map(function(i){return[people[i].lat,people[i].lng]});if(dest)pts.push([dest.lat,dest.lng]);
-  var b=L.latLngBounds(pts);
-  pts.length===1?map.setView(b.getCenter(),16):map.fitBounds(b,{padding:[60,60],maxZoom:17})}
+function fitAll(){
+  if(!live())return;var ids=Object.keys(people);
+  var pts=ids.map(function(i){return[people[i].lat,people[i].lng]});if(dest)pts.push([dest.lat,dest.lng]);if(!pts.length)return;
+  var b=L.latLngBounds(pts);if(routeB)b.extend(routeB);
+  var full=document.body.classList.contains("full"),bot=(full?0:$("panel").offsetHeight)+24,top=full?30:80;
+  if(pts.length===1&&!routeB)map.setView(b.getCenter(),16);else map.fitBounds(b,{paddingTopLeft:[40,top],paddingBottomRight:[70,bot],maxZoom:17});
+}
 function handle(d){
   if(d&&d.off){drop(String(d.id));renderList();return}
   var raw=d;d=clean(d);if(!d||Date.now()-d.ts>1800000)return;
@@ -157,26 +198,33 @@ function renderList(){
 }
 $("list").addEventListener("click",function(e){var r=e.target.closest("[data-id]");if(!r)return;var p=people[r.dataset.id];if(p){userMoved=true;map.setView([p.lat,p.lng],17)}});
 $("fit").onclick=function(){userMoved=false;fitAll()};
+$("hd").onclick=function(){var p=$("panel");p.classList.toggle("min");$("hd").textContent=p.classList.contains("min")?"▲ Mga sasakyan at opsyon":"▼ Itago"};
+$("thm").onclick=function(){dark=!dark;try{localStorage.setItem("convoyDark",dark?"1":"0")}catch(e){}setBase()};
+$("full").onclick=function(){document.body.classList.toggle("full");if(!userMoved)setTimeout(fitAll,150)};
 $("inv").onclick=function(){var u=location.href;
   if(navigator.share)navigator.share({title:"Convoy Map",text:"Sumali sa convoy map namin:",url:u}).catch(function(){});
   else if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){status("Na-copy ang link. I-paste sa kasama mo.")});
   else prompt("Kopyahin ang link:",u)};
+$("trf").onclick=function(){
+  if(!TOMTOM_KEY){status("Para sa live traffic, kailangan ng libreng TomTom API key.");return}
+  if(tfl){map.removeLayer(tfl);tfl=null;$("trf").style.boxShadow="";return}
+  tfl=L.tileLayer("https://api.tomtom.com/traffic/map/4/tile/flow/relative/{z}/{x}/{y}.png?key="+TOMTOM_KEY,{maxZoom:20,opacity:.9}).addTo(map);$("trf").style.boxShadow="0 0 0 3px #16a34a"};
 
-var TOMTOM_KEY=""; /* ilagay dito ang libreng TomTom API key para sa live traffic */
 function syncDest(r){
   if(r.dts===undefined||!(r.dts>destTs))return;
   dest=(r.dest&&typeof r.dest.lat==="number"&&typeof r.dest.lng==="number")?{lat:r.dest.lat,lng:r.dest.lng,name:String(r.dest.name||"Destinasyon").slice(0,40)}:null;
   destTs=r.dts;drawDest();
 }
 function setDest(d){dest=d;destTs=Date.now();userMoved=false;drawDest();if(sharing)push(true)}
+function showInfo(stat){$("dinfo").innerHTML=dest?'<div class="nm">📍 '+esc(dest.name)+'</div><div class="sub">'+stat+'</div>':'<div class="sub">Maghanap sa taas o pindutin nang matagal ang mapa para maglagay ng destinasyon.</div>'}
 function drawDest(){
   if(destMk){map.removeLayer(destMk);destMk=null}
-  if(routeLn){map.removeLayer(routeLn);routeLn=null}
+  if(routeLn){map.removeLayer(routeLn);routeLn=null}routeB=null;
   $("dclr").style.display=dest?"":"none";
-  if(!dest){$("dinfo").textContent="";return}
-  destMk=L.marker([dest.lat,dest.lng],{icon:L.divIcon({html:'<div class="pw"><div style="font-size:30px;line-height:30px">📍</div><div class="lb">'+esc(dest.name)+'</div></div>',className:"",iconSize:[90,60],iconAnchor:[45,28]})}).addTo(map);
-  $("dinfo").textContent="📍 "+dest.name;
-  routeFrom=null;doRoute();if(!userMoved)fitAll();
+  if(!dest){showInfo("");return}
+  destMk=L.marker([dest.lat,dest.lng],{zIndexOffset:500,icon:L.divIcon({className:"",iconSize:[110,76],iconAnchor:[55,76],
+    html:'<div class="dp"><div class="lb2">'+esc(dest.name)+'</div><svg viewBox="0 0 24 32" width="34" height="44"><path d="M12 0C5.4 0 0 5.2 0 11.7 0 20 12 32 12 32s12-12 12-20.3C24 5.2 18.6 0 12 0z" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg></div>'})}).addTo(map);
+  showInfo("Hinahanap ang ruta…");refit=true;routeFrom=null;doRoute();if(!userMoved)fitAll();
 }
 function doRoute(){
   var me=people[myId];if(!dest||!me)return;
@@ -186,9 +234,13 @@ function doRoute(){
   .then(function(r){return r.json()}).then(function(j){
     if(tgt!==dest||!j.routes||!j.routes[0])return;var r=j.routes[0];
     if(routeLn)map.removeLayer(routeLn);
-    routeLn=L.geoJSON(r.geometry,{style:{color:"#2563eb",weight:6,opacity:.85}}).addTo(map);
-    $("dinfo").textContent="📍 "+dest.name+" · "+fmtD(r.distance)+" · mga "+Math.max(1,Math.round(r.duration/60))+" min (estimate, walang traffic)";
-  }).catch(function(){if(tgt===dest)$("dinfo").textContent="📍 "+dest.name+" · hindi makuha ang ruta ngayon"});
+    var st={lineCap:"round",lineJoin:"round"};
+    var c=L.geoJSON(r.geometry,{style:Object.assign({color:"#ffffff",weight:11,opacity:.95},st)}),l=L.geoJSON(r.geometry,{style:Object.assign({color:"#3b82f6",weight:7,opacity:1},st)});
+    routeLn=L.layerGroup([c,l]).addTo(map);routeB=l.getBounds();
+    var mins=Math.max(1,Math.round(r.duration/60)),eta=new Date(Date.now()+r.duration*1000).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+    showInfo(fmtD(r.distance)+" · mga "+mins+" min · dating "+eta+" (estimate, walang traffic)");
+    if(refit){refit=false;if(!userMoved)fitAll()}
+  }).catch(function(){if(tgt===dest)showInfo("hindi makuha ang ruta ngayon")});
 }
 function search(){
   var q=$("dq").value.trim();if(!q)return;$("dres").innerHTML='<div class="sub">Naghahanap…</div>';
@@ -196,19 +248,16 @@ function search(){
   fetch("https://nominatim.openstreetmap.org/search?format=json&limit=5&q="+encodeURIComponent(q)+"&viewbox="+[b.getWest(),b.getNorth(),b.getEast(),b.getSouth()].join(","))
   .then(function(r){return r.json()}).then(function(j){
     lastRes=j||[];
-    $("dres").innerHTML=lastRes.length?lastRes.map(function(r,i){return '<button class="sm" data-i="'+i+'" style="display:block;width:100%;text-align:left;margin-bottom:6px">'+esc(r.display_name.split(",").slice(0,3).join(","))+'</button>'}).join(""):'<div class="sub">Walang nahanap.</div>';
+    $("dres").innerHTML=lastRes.length?lastRes.map(function(r,i){return '<button data-i="'+i+'">'+esc(r.display_name.split(",").slice(0,3).join(","))+'</button>'}).join(""):'<div class="sub">Walang nahanap.</div>';
   }).catch(function(){$("dres").innerHTML='<div class="sub">Hindi makapaghanap ngayon.</div>'});
 }
 $("dgo").onclick=search;
 $("dq").onkeydown=function(e){if(e.key==="Enter")search()};
 $("dres").onclick=function(e){var b=e.target.closest("[data-i]");if(!b)return;var r=lastRes[+b.dataset.i];if(!r)return;
-  $("dres").innerHTML="";$("dq").value="";setDest({lat:+r.lat,lng:+r.lon,name:r.display_name.split(",").slice(0,2).join(",").trim()})};
+  $("dres").innerHTML="";$("dq").value="";$("dq").blur();setDest({lat:+r.lat,lng:+r.lon,name:r.display_name.split(",").slice(0,2).join(",").trim()})};
 $("dclr").onclick=function(){setDest(null)};
 map.on("contextmenu",function(e){setDest({lat:e.latlng.lat,lng:e.latlng.lng,name:"Napiling lugar"})});
-$("trf").onclick=function(){
-  if(!TOMTOM_KEY){status("Para sa live traffic, kailangan ng libreng TomTom API key.");return}
-  if(tfl){map.removeLayer(tfl);tfl=null;$("trf").style.borderColor="";return}
-  tfl=L.tileLayer("https://api.tomtom.com/traffic/map/4/tile/flow/relative/{z}/{x}/{y}.png?key="+TOMTOM_KEY,{maxZoom:19,opacity:.85}).addTo(map);$("trf").style.borderColor="#16a34a"};
+
 function connect(){
   var es=new EventSource(base+"/sse?since=20m");
   es.onmessage=function(e){try{var m=JSON.parse(e.data);if(m.event&&m.event!=="message")return;handle(JSON.parse(m.message))}catch(x){}};
@@ -219,13 +268,13 @@ function push(force){
   var d={id:myId,n:veh.n||typeLabel(),v:veh.t,c:veh.c,lat:lastPos.coords.latitude,lng:lastPos.coords.longitude,ts:now,dest:dest,dts:destTs};
   handle(d);send(d);
 }
-function setBtn(){var b=$("share");if(sharing)return;b.disabled=!veh.t;b.style.opacity=veh.t?1:.5;b.className="";b.textContent=veh.t?"GO – Buksan ang GPS":"Pumili muna ng sasakyan"}
+function setBtn(){var b=$("share");if(sharing)return;b.disabled=!veh.t;b.style.opacity=1;b.className="";b.textContent=veh.t?"🚀 GO – Buksan ang GPS":"Pumili muna ng sasakyan"}
 function start(){
   if(!veh.t){status("Pumili muna ng uri ng sasakyan.");return}
   if(!navigator.geolocation){status("Hindi kayang mag-GPS ng device na ito.");return}
-  document.body.classList.add("live");try{map.invalidateSize()}catch(e){}userMoved=false;sharing=true;
+  document.body.classList.add("live");try{map.invalidateSize()}catch(e){}userMoved=false;sharing=true;showInfo("");
   status("Hinahanap ang GPS… lumabas sa bukas na lugar kung matagal.");
-  function ok(p){try{var first=!lastPos;lastPos=p;status("Live ka na sa mapa. Iwanang bukas ang app.");push(first);if(first)setTimeout(fitAll,400)}catch(e){status("May error: "+e.message)}}
+  function ok(p){try{var first=!lastPos;lastPos=p;if(first)status("Live ka na sa mapa. Iwanang bukas ang app.");push(first);if(first)setTimeout(fitAll,400)}catch(e){status("May error: "+e.message)}}
   function bad(e){if(e.code===1){status("Hindi pinayagan ang location. I-enable sa browser settings.");stop(true)}else status("Hinahanap pa ang GPS… i-on ang Location/GPS ng phone.")}
   navigator.geolocation.getCurrentPosition(ok,function(){},{enableHighAccuracy:false,maximumAge:60000,timeout:15000});
   watchId=navigator.geolocation.watchPosition(ok,bad,{enableHighAccuracy:true,maximumAge:3000,timeout:30000});
@@ -233,10 +282,10 @@ function start(){
   try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}catch(e){}
 }
 function stop(keep){
-  document.body.classList.remove("live");
-  if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;sharing=false;
+  document.body.classList.remove("live","full");
+  if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;sharing=false;lastPos=null;
   try{wl&&wl.release()}catch(e){}wl=null;setBtn();
-  if(!keep){send({id:myId,off:1});drop(myId);renderList();status("Tinigil mo na ang GPS.")}
+  if(!keep){send({id:myId,off:1});drop(myId);renderList();$("status").textContent="Tinigil mo na ang GPS."}
 }
 $("share").onclick=function(){watchId==null?start():stop(false)};
 $("stop").onclick=function(){stop(false)};
@@ -256,7 +305,7 @@ $("colors").onclick=function(e){var b=e.target.closest("[data-c]");if(b){veh.c=b
 $("cc").onchange=function(e){veh.c=e.target.value;changed()};
 $("vq").oninput=function(e){Q=e.target.value.trim().toLowerCase();buildPicker()};
 $("vname").oninput=function(e){veh.n=e.target.value;saveV();clearTimeout(window._nt);window._nt=setTimeout(function(){if(sharing)push(true)},600)};
-buildPicker();renderList();connect();
+buildPicker();renderList();showInfo("");connect();
 })();
 </script>
 </body>
