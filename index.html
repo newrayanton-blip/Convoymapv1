@@ -120,6 +120,9 @@ body.full #panel,body.full #topbar{display:none}
 .dp svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
 :root[data-theme=light] #map .leaflet-tile-pane{filter:saturate(.42) brightness(1.04)}
 .fl{filter:drop-shadow(0 3px 5px rgba(0,0,0,.45))}
+.hi{position:absolute;left:26px;top:0;width:48px;height:48px;pointer-events:none}
+.hi i{position:absolute;left:50%;top:-13px;margin-left:-8px;border:8px solid transparent;border-bottom:12px solid #000;border-top:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+#fab button.on{color:var(--acc);box-shadow:0 0 0 2.5px var(--acc),var(--sh)}
 .mw{position:relative;width:100px;height:84px}
 .halo{position:absolute;left:12px;top:-4px;width:76px;height:76px;border-radius:50%;background:rgba(20,184,196,.18);border:1.5px solid rgba(20,184,196,.35)}
 .ar{position:absolute;left:28px;top:12px;width:44px;height:44px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45));transition:transform .4s}
@@ -172,7 +175,8 @@ body.nav.full #fab{top:calc(12px + env(safe-area-inset-top,0px))}
     <div id="dres"></div>
   </div>
   <div id="fab">
-    <button id="fit" aria-label="Fit lahat"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+    <button id="fit" aria-label="Re-center"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+    <button id="ovb" aria-label="Overview"><svg class="i" viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg></button>
     <button id="trf" aria-label="Traffic"><svg class="i" viewBox="0 0 24 24"><rect x="7.5" y="2" width="9" height="20" rx="3"/><circle cx="12" cy="7" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="17" r="1"/></svg></button>
     <button id="thm" aria-label="Estilo ng mapa"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></button>
     <button id="full" aria-label="Full view"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -268,7 +272,8 @@ function setBase(fb){
 }
 setBase();
 var follow=false,routeSteps=null,rlG=null;
-map.on("dragstart",function(){userMoved=true;follow=false});
+function setFollow(v){follow=v;$("fit").classList.toggle("on",v)}
+map.on("dragstart",function(){userMoved=true;setFollow(false)});
 var dest=null,destTs=0,destMk=null,routeLn=null,routeB=null,routeFrom=null,routeAt=0,refit=false,tfl=null,lastRes=[],userMoved=false,people={},markers={},watchId=null,sharing=false,lastPos=null,lastSend=0,fitT=null,wl=null;
 
 function clean(d){
@@ -276,11 +281,10 @@ function clean(d){
   return{id:d.id.slice(0,20),n:String(d.n||"Sasakyan").slice(0,24),v:ICONS[d.v]?d.v:"car",c:/^#[0-9a-f]{6}$/i.test(d.c)?d.c:"#2563eb",lat:d.lat,lng:d.lng,ts:+d.ts||Date.now(),h:(typeof d.h==="number"&&isFinite(d.h))?d.h:null};
 }
 function pinHtml(d,me){
-  if(me)return '<div class="mw"><div class="halo"></div><svg class="ar" viewBox="0 0 40 40" style="transform:rotate('+(d.h||0)+'deg)"><path d="M20 3L34 34L20 26.5L6 34Z" fill="#14b8c4" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>';
-  return '<div class="pw"><div class="bd" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>'}
+  return '<div class="pw'+(me?' me':'')+'">'+(me?'<div class="pl" style="background:'+d.c+'"></div>':'')+(me&&d.h!=null?'<div class="hi" style="transform:rotate('+d.h+'deg)"><i style="border-bottom-color:'+d.c+'"></i></div>':'')+'<div class="bd" style="border-color:'+d.c+'"><svg viewBox="0 0 40 22">'+ico(d.v,d.c)+'</svg></div><div class="lb"><i style="background:'+d.c+'"></i><span>'+esc(d.n)+'</span></div></div>'}
 function upsert(d){
   if(d.h==null&&people[d.id])d.h=people[d.id].h;
-  people[d.id]=d;var isMe=d.id===myId,ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d,isMe),className:"",iconSize:[100,84],iconAnchor:[50,isMe?34:24]});
+  people[d.id]=d;var isMe=d.id===myId,ll=[d.lat,d.lng],ic=L.divIcon({html:pinHtml(d,isMe),className:"",iconSize:[100,76],iconAnchor:[50,24]});
   if(markers[d.id]){markers[d.id].setLatLng(ll);markers[d.id].setIcon(ic)}else markers[d.id]=L.marker(ll,{icon:ic,zIndexOffset:d.id===myId?1000:0}).addTo(map);
   markers[d.id].setOpacity(Date.now()-d.ts>120000?.5:1);
 }
@@ -297,7 +301,7 @@ function handle(d){
   var raw=d;d=clean(d);if(!d||Date.now()-d.ts>1800000)return;
   syncDest(raw);
   var isNew=!people[d.id];upsert(d);renderList();if(d.id===myId){doRoute();updateBanner();if(follow&&live())map.setView([d.lat,d.lng],Math.max(map.getZoom(),16))}
-  if(isNew&&!userMoved){clearTimeout(fitT);fitT=setTimeout(fitAll,700)}
+  if(isNew&&!userMoved&&!follow){clearTimeout(fitT);fitT=setTimeout(fitAll,700)}
 }
 function dist(a,b){var R=6371000,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lng-a.lng)*r;
   var x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x))}
@@ -312,7 +316,10 @@ function renderList(){
     return '<div class="row" data-id="'+esc(i)+'"><div class="av" style="border-color:'+p.c+'"><svg viewBox="0 0 40 22">'+ico(p.v,p.c)+'</svg></div><div><div class="nm">'+esc(p.n)+(i===myId?" (ikaw)":"")+'</div><div class="sub">'+ago(p.ts)+d+'</div></div></div>'}).join("");
 }
 $("list").addEventListener("click",function(e){var r=e.target.closest("[data-id]");if(!r)return;var p=people[r.dataset.id];if(p){userMoved=true;map.setView([p.lat,p.lng],17)}});
-$("fit").onclick=function(){follow=false;userMoved=false;fitAll()};
+function recenter(){var me=people[myId];setFollow(true);userMoved=true;if(me)map.setView([me.lat,me.lng],Math.max(map.getZoom(),16))}
+function overview(){setFollow(false);userMoved=false;fitAll()}
+$("fit").onclick=recenter;
+$("ovb").onclick=overview;
 $("hd").onclick=function(){$("panel").classList.toggle("min");hdLabel()};
 $("thm").onclick=function(){mode=MODES[(MODES.indexOf(mode)+1)%MODES.length];try{localStorage.setItem("convoyMode",mode)}catch(e){}applyUI();setBase();toast(MN[mode])};
 $("full").onclick=function(){document.body.classList.toggle("full");if(!userMoved)setTimeout(fitAll,150)};
@@ -330,7 +337,7 @@ function syncDest(r){
   dest=(r.dest&&typeof r.dest.lat==="number"&&typeof r.dest.lng==="number")?{lat:r.dest.lat,lng:r.dest.lng,name:String(r.dest.name||"Destinasyon").slice(0,40)}:null;
   destTs=r.dts;drawDest();
 }
-function setDest(d){dest=d;destTs=Date.now();userMoved=false;drawDest();if(sharing)push(true)}
+function setDest(d){dest=d;destTs=Date.now();userMoved=false;setFollow(false);drawDest();if(sharing)push(true)}
 var PINSVG='<svg viewBox="0 0 24 32"><path d="M12 0C5.4 0 0 5.2 0 11.7 0 20 12 32 12 32s12-12 12-20.3C24 5.2 18.6 0 12 0z" fill="#ef4444" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="11.5" r="4.5" fill="#fff"/></svg>';
 function showInfo(stat,c){
   if(!dest){$("dinfo").innerHTML='<div class="hint">Maghanap sa taas o pindutin nang matagal ang mapa para maglagay ng destinasyon.</div>';return}
@@ -394,9 +401,9 @@ function setBtn(){var b=$("share");if(sharing)return;b.disabled=!veh.t;b.style.o
 function start(){
   if(!veh.t){status("Pumili muna ng uri ng sasakyan.");return}
   if(!navigator.geolocation){status("Hindi kayang mag-GPS ng device na ito.");return}
-  document.body.classList.add("live");try{map.invalidateSize()}catch(e){}userMoved=false;sharing=true;showInfo("");hdLabel();
+  document.body.classList.add("live");try{map.invalidateSize()}catch(e){}userMoved=true;setFollow(true);sharing=true;showInfo("");hdLabel();
   status("Hinahanap ang GPS… lumabas sa bukas na lugar kung matagal.");
-  function ok(p){try{var first=!lastPos;lastPos=p;if(first)status("Live ka na sa mapa. Iwanang bukas ang app.");push(first);if(first)setTimeout(fitAll,400)}catch(e){status("May error: "+e.message)}}
+  function ok(p){try{var first=!lastPos;lastPos=p;if(first)status("Live ka na sa mapa. Iwanang bukas ang app.");push(first)}catch(e){status("May error: "+e.message)}}
   function bad(e){if(e.code===1){status("Hindi pinayagan ang location. I-enable sa browser settings.");stop(true)}else status("Hinahanap pa ang GPS… i-on ang Location/GPS ng phone.")}
   navigator.geolocation.getCurrentPosition(ok,function(){},{enableHighAccuracy:false,maximumAge:60000,timeout:15000});
   watchId=navigator.geolocation.watchPosition(ok,bad,{enableHighAccuracy:true,maximumAge:3000,timeout:30000});
@@ -457,8 +464,8 @@ function buildSteps(r){
 function syncLabels(){if(!rlG)return;if(map.getZoom()>=14){if(!map.hasLayer(rlG))rlG.addTo(map)}else if(map.hasLayer(rlG))map.removeLayer(rlG)}
 map.on("zoomend",syncLabels);
 $("dinfo").onclick=function(e){
-  if(e.target.closest("#rc")){var me=people[myId];follow=true;userMoved=true;if(me)map.setView([me.lat,me.lng],Math.max(map.getZoom(),16))}
-  else if(e.target.closest("#ov")){follow=false;userMoved=false;fitAll()}
+  if(e.target.closest("#rc"))recenter();
+  else if(e.target.closest("#ov"))overview();
 };
 $("nvx").onclick=function(){setDest(null)};
 buildPicker();renderList();showInfo("");connect();
